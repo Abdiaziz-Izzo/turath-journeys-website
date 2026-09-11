@@ -25,6 +25,10 @@
     --warn-bg: #FBEEE3;
     --warn-line: #D99B62;
     --max: 1140px;
+    --shadow-sm: 0 2px 10px rgba(43,39,24,.06);
+    --shadow-md: 0 10px 30px rgba(43,39,24,.09);
+    --shadow-lg: 0 20px 50px rgba(43,39,24,.14);
+    --ease: cubic-bezier(.22,.8,.28,1);
   }
 
   *{box-sizing:border-box;}
@@ -35,8 +39,10 @@
     color:var(--ink-soft);
     font-family:'Jost', sans-serif;
     font-weight:400;
-    line-height:1.6;
+    line-height:1.65;
     -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    text-rendering:optimizeLegibility;
   }
   h1,h2,h3,.serif{
     font-family:'Fraunces', serif;
@@ -50,6 +56,16 @@
   .wrap{max-width:var(--max); margin:0 auto; padding:0 32px;}
   @media (max-width:640px){ .wrap{padding:0 26px;} }
   :focus-visible{outline:2px solid var(--gold-deep); outline-offset:3px;}
+
+  /* ---------- Scroll reveal ---------- */
+  .reveal{opacity:0; transform:translateY(22px); transition:opacity .7s var(--ease), transform .7s var(--ease);}
+  .reveal.in{opacity:1; transform:translateY(0);}
+  @media (prefers-reduced-motion: reduce){
+    .reveal{opacity:1; transform:none; transition:none;}
+  }
+
+  /* ---------- Icon system ---------- */
+  .ico{width:1em; height:1em; display:inline-block; vertical-align:-0.125em; flex-shrink:0;}
 
   /* ---------- Placeholder photo blocks ---------- */
   .ph{
@@ -80,18 +96,22 @@
   }
 
   /* ---------- NAV ---------- */
-  header{position:sticky; top:0; z-index:50; background:var(--cream); border-bottom:1px solid var(--line);}
+  header{position:sticky; top:0; z-index:50; background:var(--cream); border-bottom:1px solid var(--line); transition:box-shadow .3s ease;}
+  header.scrolled{box-shadow:var(--shadow-sm);}
   .nav{display:flex; align-items:center; justify-content:space-between; padding:13px 32px; max-width:var(--max); margin:0 auto;}
-  .brand{display:flex; align-items:center; gap:11px;}
+  .brand{display:flex; align-items:center; gap:11px; transition:opacity .2s ease;}
+  .brand:hover{opacity:.8;}
   .brand img{width:38px; height:38px; border-radius:50%;}
   .brand-text{display:flex; flex-direction:column; line-height:1.05;}
   .brand-text b{font-family:'Fraunces',serif; font-size:18px; color:var(--ink); font-weight:600;}
   .brand-text small{font-size:10px; letter-spacing:.13em; color:var(--gold-deep);}
   nav.links{display:flex; gap:30px; align-items:center;}
-  nav.links a{font-size:14px; color:var(--ink-soft); transition:color .2s;}
+  nav.links a{font-size:14px; color:var(--ink-soft); transition:color .2s; position:relative;}
+  nav.links a:not(.nav-cta)::after{content:''; position:absolute; left:0; right:100%; bottom:-4px; height:1px; background:var(--gold-deep); transition:right .25s var(--ease);}
+  nav.links a:not(.nav-cta):hover::after{right:0;}
   nav.links a:hover{color:var(--gold-deep);}
-  .nav-cta{background:var(--green); color:var(--cream-2)!important; padding:9px 18px; border-radius:2px; font-size:13.5px; border:1px solid var(--green); transition:background .2s;}
-  .nav-cta:hover{background:var(--green-deep);}
+  .nav-cta{background:var(--green); color:var(--cream-2)!important; padding:9px 18px; border-radius:3px; font-size:13.5px; border:1px solid var(--green); transition:background .2s, transform .2s, box-shadow .2s; box-shadow:var(--shadow-sm);}
+  .nav-cta:hover{background:var(--green-deep); transform:translateY(-1px); box-shadow:var(--shadow-md);}
   .nav-toggle{display:none;}
 
   @media (max-width:860px){
@@ -112,11 +132,11 @@
     .nav-toggle.open span{opacity:0;}
   }
 
-  .btn{display:inline-flex; align-items:center; gap:8px; padding:14px 26px; font-size:14px; letter-spacing:.02em; border-radius:2px; transition:all .2s ease; border:1px solid transparent; cursor:pointer;}
-  .btn-primary{background:var(--green); color:var(--cream-2);}
-  .btn-primary:hover{background:var(--green-deep); transform:translateY(-1px);}
+  .btn{display:inline-flex; align-items:center; gap:8px; padding:14px 26px; font-size:14px; letter-spacing:.02em; border-radius:3px; transition:all .25s var(--ease); border:1px solid transparent; cursor:pointer;}
+  .btn-primary{background:var(--green); color:var(--cream-2); box-shadow:var(--shadow-sm);}
+  .btn-primary:hover{background:var(--green-deep); transform:translateY(-2px); box-shadow:var(--shadow-md);}
   .btn-ghost{border-color:var(--ink); color:var(--ink);}
-  .btn-ghost:hover{border-color:var(--gold-deep); color:var(--gold-deep);}
+  .btn-ghost:hover{border-color:var(--gold-deep); color:var(--gold-deep); background:var(--cream-2); transform:translateY(-2px);}
 
   /* ---------- FLOATING WHATSAPP ---------- */
   .wa-float{
@@ -130,7 +150,7 @@
   @media (max-width:640px){ .wa-float{width:50px; height:50px; right:16px; bottom:16px;} .wa-float svg{width:25px;height:25px;} }
 
   /* ---------- HERO (centered) ---------- */
-  .hero{position:relative; padding:64px 0 56px; text-align:center;}
+  .hero{position:relative; padding-top:64px; padding-bottom:56px; text-align:center;}
   .hero-copy{position:relative; z-index:1; max-width:880px; margin:0 auto;}
   .hero-title{font-size:clamp(30px, 4.6vw, 52px); letter-spacing:-.01em; font-weight:600; line-height:1.22;}
   @media (max-width:420px){ .hero-title{font-size:27px;} }
@@ -142,12 +162,28 @@
   .hero-sub{font-size:17.5px; max-width:52ch; margin:0 auto 18px; color:var(--ink-soft);}
   .hero-sub.offer{color:var(--ink); font-weight:500; margin-bottom:32px;}
   .hero-cta{display:flex; gap:14px; flex-wrap:wrap; justify-content:center;}
-  .hero-photo{position:relative; z-index:1; max-width:640px; margin:44px auto 0;}
-  .hero-photo img{width:100%; height:340px; object-fit:cover; border:1px solid var(--gold); padding:10px; background:var(--cream-2);}
-  @media (max-width:640px){ .hero-photo img{height:220px;} }
+
+  @media (prefers-reduced-motion: no-preference){
+    .hero-title, .hero-slogan, .hero-sub, .hero-cta, .hero-photo{
+      opacity:0; transform:translateY(16px);
+      animation:heroIn .8s var(--ease) forwards;
+    }
+    .hero-title{animation-delay:.05s;}
+    .hero-slogan{animation-delay:.18s;}
+    .hero-sub{animation-delay:.28s;}
+    .hero-sub.offer{animation-delay:.36s;}
+    .hero-cta{animation-delay:.46s;}
+    .hero-photo{animation-delay:.55s;}
+  }
+  @keyframes heroIn{to{opacity:1; transform:translateY(0);}}
+  .hero-photo{position:relative; z-index:1; max-width:640px; margin:44px auto 0; border:1px solid var(--gold); padding:10px; background:var(--cream-2); box-shadow:var(--shadow-lg); overflow:hidden;}
+  .hero-photo .frame{overflow:hidden; height:340px;}
+  .hero-photo img{width:100%; height:100%; object-fit:cover; transition:transform 1.2s var(--ease);}
+  .hero-photo:hover img{transform:scale(1.05);}
+  @media (max-width:640px){ .hero-photo .frame{height:220px;} }
 
   /* ---------- SECTION HEAD (centered by default) ---------- */
-  section{padding:80px 0;}
+  section{padding:clamp(56px, 9vw, 100px) 0;}
   .section-head{max-width:640px; margin:0 auto 44px; text-align:center;}
   .section-head.spaced{margin-top:26px;}
   .section-head .label{
@@ -178,7 +214,9 @@
   .t-card{
     background:var(--cream-2); border:1px solid var(--line); padding:26px;
     flex:0 0 300px; scroll-snap-align:start; display:flex; flex-direction:column;
+    transition:transform .3s var(--ease), box-shadow .3s var(--ease);
   }
+  .t-card:hover{transform:translateY(-4px); box-shadow:var(--shadow-md);}
   .t-stars{color:var(--gold); font-size:13px; letter-spacing:2px; margin-bottom:12px;}
   .t-card p{font-size:14px; font-style:italic; color:var(--ink); margin-bottom:18px; flex-grow:1;}
   .t-who{display:flex; align-items:center; gap:12px;}
@@ -187,30 +225,41 @@
   .t-nav{display:flex; justify-content:center; gap:12px; margin-top:8px;}
   .t-nav button{
     width:38px; height:38px; border-radius:50%; border:1px solid var(--gold);
-    background:var(--cream-2); color:var(--gold-deep); cursor:pointer; font-size:16px;
-    display:flex; align-items:center; justify-content:center; transition:background .2s;
+    background:var(--cream-2); color:var(--gold-deep); cursor:pointer;
+    display:flex; align-items:center; justify-content:center; transition:background .2s, transform .2s, color .2s;
   }
-  .t-nav button:hover{background:var(--gold); color:var(--cream-2);}
+  .t-nav button:hover{background:var(--gold); color:#fff; transform:translateY(-2px);}
+  .t-nav button svg{width:16px; height:16px;}
   .g-reviews{text-align:center; margin-top:28px;}
   .g-reviews a{font-size:13.5px; border-bottom:1px solid var(--gold-deep); color:var(--gold-deep); padding-bottom:2px;}
 
   /* ---------- THE DIFFERENCE ---------- */
   .shift{max-width:920px; margin:0 auto;}
   .shift-grid{display:grid; grid-template-columns:1fr 1fr; gap:40px;}
-  .shift-col{padding:30px 28px; border:1px solid var(--line); background:var(--cream-2);}
+  .shift-col{padding:30px 28px; border:1px solid var(--line); background:var(--cream-2); transition:transform .3s var(--ease), box-shadow .3s var(--ease);}
+  .shift-col:hover{transform:translateY(-4px); box-shadow:var(--shadow-md);}
   .shift-col.dream{border-color:var(--gold); background:#FBF5E8;}
   .shift-col h3{font-size:15px; letter-spacing:.06em; margin-bottom:18px; font-family:'Jost',sans-serif; font-weight:600;}
   .shift-col.without h3{color:var(--ink-soft);}
   .shift-col.dream h3{color:var(--gold-deep);}
   .shift-col ul{list-style:none; margin:0; padding:0;}
-  .shift-col li{font-size:14.5px; padding:9px 0 9px 22px; position:relative; text-align:left; line-height:1.45;}
-  .shift-col.without li::before{content:'✕'; position:absolute; left:0; color:var(--line); font-size:11px; top:12px;}
-  .shift-col.dream li::before{content:'✦'; position:absolute; left:0; color:var(--gold); font-size:11px; top:12px;}
+  .shift-col li{font-size:14.5px; padding:9px 0 9px 26px; position:relative; text-align:left; line-height:1.45;}
+  .shift-col.without li::before{
+    content:''; position:absolute; left:0; top:13px; width:13px; height:13px;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C9B889' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='M5 5l14 14M19 5L5 19'/%3E%3C/svg%3E");
+    background-size:contain; background-repeat:no-repeat;
+  }
+  .shift-col.dream li::before{
+    content:''; position:absolute; left:0; top:13px; width:14px; height:14px;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23A9843F' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12l5 5L20 6'/%3E%3C/svg%3E");
+    background-size:contain; background-repeat:no-repeat;
+  }
   @media (max-width:700px){.shift-grid{grid-template-columns:1fr; gap:20px;}}
 
   /* ---------- APPROACH (centered) ---------- */
   .approach-top{max-width:640px; margin:0 auto 40px; text-align:center;}
-  .guide-photo{width:190px; height:190px; border-radius:50%; object-fit:cover; border:2px solid var(--gold); margin:0 auto; padding:4px; background:var(--cream-2);}
+  .guide-photo{width:190px; height:190px; border-radius:50%; object-fit:cover; border:2px solid var(--gold); margin:0 auto; padding:4px; background:var(--cream-2); box-shadow:var(--shadow-md); transition:transform .4s var(--ease);}
+  .guide-photo:hover{transform:scale(1.04);}
 
   .pull-quote{max-width:640px; margin:0 auto 40px; text-align:center;}
   .pull-quote q{
@@ -237,8 +286,10 @@
     border:1.5px solid var(--warn-line); background:var(--warn-bg);
     padding:20px 24px; font-size:14px; color:#6B3A1B;
     display:flex; align-items:flex-start; gap:14px;
+    box-shadow:var(--shadow-sm); transition:transform .3s var(--ease), box-shadow .3s var(--ease);
   }
-  .scarcity .icon{font-size:20px; flex-shrink:0; line-height:1.3;}
+  .scarcity:hover{transform:translateY(-3px); box-shadow:var(--shadow-md);}
+  .scarcity .icon{flex-shrink:0; width:22px; height:22px; color:var(--warn); margin-top:1px;}
   .scarcity b{color:var(--warn); display:block; margin-bottom:3px; font-size:14.5px;}
 
   /* ---------- TOURS (centered, stacked) ---------- */
@@ -246,6 +297,13 @@
   .tour-feature:first-of-type{padding-top:0;}
   .tour-media{margin-bottom:28px;}
   .tour-media .ph{height:260px; max-width:520px; margin:0 auto;}
+  .tour-media .framed{
+    max-width:520px; margin:0 auto; border:1px solid var(--gold); padding:10px;
+    background:var(--cream-2); box-shadow:var(--shadow-md); overflow:hidden;
+  }
+  .tour-media .framed .inner{overflow:hidden; height:260px;}
+  .tour-media .framed img{width:100%; height:100%; object-fit:cover; transition:transform 1s var(--ease);}
+  .tour-media .framed:hover img{transform:scale(1.06);}
   .tour-kicker{font-size:11.5px; letter-spacing:.13em; color:var(--gold-deep); margin-bottom:12px; display:block;}
   .tour-body h3{font-size:clamp(23px,2.4vw,30px); margin-bottom:14px;}
   .tour-body p{font-size:15px; margin-bottom:20px;}
@@ -264,8 +322,9 @@
     max-width:420px; margin:0 auto 24px; position:relative;
     background:linear-gradient(180deg,#FBF5E8, var(--cream-2));
     border:1px solid var(--gold); padding:28px 26px 24px;
-    box-shadow:0 10px 30px rgba(138,106,46,.1);
+    box-shadow:var(--shadow-md); transition:transform .3s var(--ease), box-shadow .3s var(--ease);
   }
+  .offer-box:hover{transform:translateY(-4px); box-shadow:var(--shadow-lg);}
   .offer-box::before{
     content:'PRIVATE TOUR PRICING'; position:absolute; top:-11px; left:50%; transform:translateX(-50%);
     background:var(--gold); color:#fff; font-size:10.5px; letter-spacing:.12em;
@@ -292,8 +351,10 @@
   .combo{
     max-width:640px; margin:44px auto 0; text-align:center;
     background:var(--green); color:var(--cream); padding:38px 32px; position:relative;
-    border:1px solid var(--gold);
+    border:1px solid var(--gold); box-shadow:var(--shadow-lg);
+    transition:transform .3s var(--ease);
   }
+  .combo:hover{transform:translateY(-4px);}
   .combo::before{
     content:'BEST VALUE'; position:absolute; top:-11px; left:50%; transform:translateX(-50%);
     background:var(--gold); color:#fff; font-size:10.5px; letter-spacing:.12em; padding:5px 14px;
@@ -309,12 +370,14 @@
   .bonus-item{
     display:flex; align-items:flex-start; gap:12px; text-align:left;
     padding:16px 18px; background:var(--cream-2); border:1px solid var(--line);
-    flex:0 1 260px;
+    flex:0 1 260px; transition:transform .3s var(--ease), box-shadow .3s var(--ease);
   }
+  .bonus-item:hover{transform:translateY(-4px); box-shadow:var(--shadow-md);}
   .bonus-item .tick{
-    width:20px; height:20px; border-radius:50%; background:var(--green); color:var(--cream);
-    flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:11px; margin-top:2px;
+    width:20px; height:20px; border-radius:50%; background:var(--green); color:#fff;
+    flex-shrink:0; display:flex; align-items:center; justify-content:center; margin-top:2px;
   }
+  .bonus-item .tick svg{width:11px; height:11px;}
   .bonus-item p{font-size:13.5px; margin:0; color:var(--ink);}
   .bonus-item p b{display:block; font-family:'Fraunces',serif; font-size:15.5px; font-weight:600; margin-bottom:2px;}
   @media (max-width:600px){.bonus-item{flex-basis:100%;}}
@@ -323,32 +386,36 @@
   .guarantee{
     max-width:760px; margin:0 auto; text-align:center;
     border:1px solid var(--gold); background:#FBF5E8; padding:44px 36px;
-    position:relative;
+    position:relative; box-shadow:var(--shadow-md); transition:transform .3s var(--ease);
   }
+  .guarantee:hover{transform:translateY(-4px);}
   .g-seal{
-    width:64px; height:64px; border-radius:50%; border:2px solid var(--gold);
+    width:68px; height:68px; border-radius:50%; border:2px solid var(--gold);
     display:flex; align-items:center; justify-content:center; margin:0 auto 20px;
-    font-family:'Fraunces',serif; font-size:26px; color:var(--gold-deep);
+    color:var(--gold-deep);
   }
+  .g-seal svg{width:30px; height:30px;}
   .guarantee h3{font-size:24px; margin-bottom:16px;}
   .guarantee p{font-size:15px; max-width:60ch; margin:0 auto; text-align:left;}
 
   /* ---------- FAQ ---------- */
   .faq{max-width:760px; margin:0 auto;}
-  .faq details{border-top:1px solid var(--line); padding:20px 0;}
+  .faq details{border-top:1px solid var(--line); padding:20px 0; transition:background .2s ease;}
   .faq details:last-child{border-bottom:1px solid var(--line);}
   .faq summary{
     cursor:pointer; list-style:none; font-family:'Fraunces',serif;
     font-size:19px; font-weight:600; color:var(--ink);
     display:flex; justify-content:space-between; align-items:center; gap:20px; text-align:left;
+    transition:color .2s ease;
   }
+  .faq summary:hover{color:var(--gold-deep);}
   .faq summary::-webkit-details-marker{display:none;}
   .faq summary::after{
     content:'+'; font-size:22px; color:var(--gold-deep); flex-shrink:0;
-    font-family:'Jost',sans-serif; font-weight:300;
+    font-family:'Jost',sans-serif; font-weight:300; transition:transform .3s ease;
   }
-  .faq details[open] summary::after{content:'–';}
-  .faq p{font-size:14.5px; margin:14px 0 0; text-align:left;}
+  .faq details[open] summary::after{content:'–'; transform:rotate(180deg);}
+  .faq p{font-size:14.5px; margin:14px 0 0; text-align:left; overflow:hidden;}
 
   /* ---------- CONTACT ---------- */
   .contact{background:var(--green); color:var(--cream);}
@@ -404,16 +471,16 @@
       </div>
     </div>
     <div class="hero-photo">
-      <img src="https://images.pexels.com/photos/30429165/pexels-photo-30429165.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="Al-Masjid an-Nabawi, Madinah">
+      <div class="frame"><img src="https://images.pexels.com/photos/30429165/pexels-photo-30429165.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="Al-Masjid an-Nabawi, Madinah"></div>
     </div>
   </section>
 
   <!-- TRUST STRIP -->
   <div class="trust">
     <div class="wrap trust-row">
-      <div class="trust-stat"><div class="num">100+</div><div class="lbl">GUESTS HOSTED</div></div>
+      <div class="trust-stat"><div class="num" data-count="100" data-suffix="+">0+</div><div class="lbl">GUESTS HOSTED</div></div>
       <div class="trust-sep"></div>
-      <div class="trust-stat"><div class="num">100%</div><div class="lbl">FIVE-STAR REVIEWS</div></div>
+      <div class="trust-stat"><div class="num" data-count="100" data-suffix="%">0%</div><div class="lbl">FIVE-STAR REVIEWS</div></div>
       <div class="trust-sep"></div>
       <div class="trust-stat" style="max-width:220px;"><div class="lbl" style="margin-top:0; font-family:'Fraunces',serif; font-size:16px; color:var(--ink); letter-spacing:0; font-style:italic;">Guides connected to the Islamic University of Madinah</div></div>
     </div>
@@ -495,8 +562,8 @@
         </div>
       </div>
       <div class="t-nav">
-        <button aria-label="Scroll reviews left" onclick="document.getElementById('tCarousel').scrollBy({left:-320,behavior:'smooth'})">‹</button>
-        <button aria-label="Scroll reviews right" onclick="document.getElementById('tCarousel').scrollBy({left:320,behavior:'smooth'})">›</button>
+        <button aria-label="Scroll reviews left" onclick="document.getElementById('tCarousel').scrollBy({left:-320,behavior:'smooth'})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <button aria-label="Scroll reviews right" onclick="document.getElementById('tCarousel').scrollBy({left:320,behavior:'smooth'})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
       </div>
     </div>
     <div class="g-reviews"><a href="https://share.google/XvJCCozSM6iN6CVLd" target="_blank" rel="noopener">View all reviews on Google →</a></div>
@@ -573,7 +640,7 @@
   <!-- TOURS -->
   <section id="tours" class="wrap">
     <div class="tour-media">
-      <img src="https://images.pexels.com/photos/33940777/pexels-photo-33940777.jpeg?auto=compress&cs=tinysrgb&w=1400" alt="Masjid Quba, Madinah" style="width:100%; max-width:520px; height:260px; object-fit:cover; border:1px solid var(--gold); padding:10px; background:var(--cream-2); margin:0 auto;">
+      <div class="framed"><div class="inner"><img src="https://images.pexels.com/photos/33940777/pexels-photo-33940777.jpeg?auto=compress&cs=tinysrgb&w=1400" alt="Masjid Quba, Madinah"></div></div>
     </div>
 
     <div class="section-head">
@@ -667,7 +734,7 @@
     </div>
 
     <div class="scarcity" style="margin-top:44px;">
-      <span class="icon">⚠</span>
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
       <div>
         <b>Only 3 private groups taken per week.</b>
         This is to make sure we can consistently give the best experience and keep quality high for our guests. Book early so you're not disappointed.
@@ -684,31 +751,31 @@
     </div>
     <div class="bonus-grid">
       <div class="bonus-item">
-        <div class="tick">✓</div>
+        <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg></div>
         <p><b>24/7 WhatsApp support</b>Anything you need while you're in Saudi Arabia, including food recommendations.</p>
       </div>
       <div class="bonus-item">
-        <div class="tick">✓</div>
+        <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg></div>
         <p><b>Where to buy dates</b>Recommendations for good quality dates to take home.</p>
       </div>
       <div class="bonus-item">
-        <div class="tick">✓</div>
+        <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg></div>
         <p><b>Tailor visit</b>Pointed toward a tailor if you'd like a custom-made thobe.</p>
       </div>
       <div class="bonus-item">
-        <div class="tick">✓</div>
+        <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg></div>
         <p><b>Fair-priced taxis to Makkah</b>Help arranging transport, so you're not overcharged.</p>
       </div>
       <div class="bonus-item">
-        <div class="tick">✓</div>
+        <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg></div>
         <p><b>Desert excursion pointers</b>Recommendations for archery, camel riding and other desert activities.</p>
       </div>
       <div class="bonus-item">
-        <div class="tick">✓</div>
+        <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg></div>
         <p><b>Airport pickup arranging</b>Help sorting out a pickup so you land and go straight to your hotel.</p>
       </div>
       <div class="bonus-item">
-        <div class="tick">✓</div>
+        <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg></div>
         <p><b>Umrah preparation guidance</b>Practical and spiritual material to help you prepare properly.</p>
       </div>
     </div>
@@ -721,7 +788,7 @@
       <h2>The Core Experience Guarantee.</h2>
     </div>
     <div class="guarantee">
-      <div class="g-seal">✦</div>
+      <div class="g-seal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div>
       <p>You're not booking a driver. You're booking an experience. Every Madinah Heritage Tour is led by a knowledgeable guide from the Islamic University of Madinah, built specifically for Western visitors, and structured around the stories, events and people that shaped this city and the legacy of our religion.</p>
       <p style="margin-top:16px;">We guarantee, with the permission of Allah, a genuine guided experience: the Seerah, the historical context, clear explanations, and the chance to ask as many questions as you like. If we don't deliver that, we'll make it right.</p>
     </div>
@@ -818,6 +885,84 @@
 <a href="https://wa.me/message/PJ7F5WYD2WMEH1?text=Assalamu%20alaikum%21%20We%27re%20looking%20to%20visit%20Madinah%2C%20and%20we%27re%20interested%20in%20your%20tour." class="wa-float" aria-label="Message us on WhatsApp" target="_blank" rel="noopener">
   <svg viewBox="0 0 32 32" fill="#fff"><path d="M16.004 2.667c-7.363 0-13.333 5.97-13.333 13.333 0 2.353.615 4.66 1.782 6.687L2.667 29.333l6.79-1.78a13.27 13.27 0 0 0 6.546 1.727h.006c7.363 0 13.333-5.97 13.333-13.333 0-3.56-1.387-6.907-3.905-9.427a13.24 13.24 0 0 0-9.433-3.853Zm0 24.4h-.005a11.06 11.06 0 0 1-5.636-1.543l-.404-.24-4.03 1.057 1.076-3.928-.263-.403a11.04 11.04 0 0 1-1.693-5.91c0-6.106 4.97-11.076 11.078-11.076a11.02 11.02 0 0 1 7.834 3.25 11 11 0 0 1 3.24 7.834c-.003 6.107-4.97 11.077-11.077 11.077v-.118Zm6.073-8.293c-.333-.167-1.966-.97-2.27-1.08-.305-.11-.527-.167-.75.167-.222.333-.86 1.08-1.055 1.303-.194.222-.388.25-.72.083-.334-.167-1.41-.52-2.686-1.658-.993-.886-1.663-1.98-1.858-2.313-.194-.334-.02-.514.147-.68.15-.15.334-.39.5-.583.167-.194.223-.333.334-.556.111-.222.056-.417-.028-.583-.083-.167-.75-1.807-1.028-2.474-.27-.65-.545-.562-.75-.573-.194-.01-.417-.012-.64-.012-.222 0-.583.083-.888.417-.305.333-1.166 1.14-1.166 2.78s1.194 3.226 1.36 3.448c.167.222 2.348 3.585 5.687 5.03.795.343 1.415.548 1.898.7.797.254 1.523.218 2.096.132.64-.095 1.966-.804 2.243-1.58.278-.777.278-1.443.194-1.581-.083-.14-.305-.222-.639-.39Z"/></svg>
 </a>
+
+<script>
+(function(){
+  // Header shadow on scroll
+  var header = document.querySelector('header');
+  var onScroll = function(){
+    if(window.scrollY > 8){ header.classList.add('scrolled'); }
+    else{ header.classList.remove('scrolled'); }
+  };
+  document.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  // Count-up stats
+  var nums = document.querySelectorAll('.num[data-count]');
+  var animateNum = function(el){
+    var target = parseInt(el.getAttribute('data-count'), 10);
+    var suffix = el.getAttribute('data-suffix') || '';
+    var start = null;
+    var duration = 1200;
+    var step = function(ts){
+      if(!start) start = ts;
+      var progress = Math.min((ts - start) / duration, 1);
+      var eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(eased * target) + suffix;
+      if(progress < 1){ requestAnimationFrame(step); }
+    };
+    requestAnimationFrame(step);
+  };
+  if(nums.length){
+    if('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+      var numIo = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if(entry.isIntersecting){ animateNum(entry.target); numIo.unobserve(entry.target); }
+        });
+      }, {threshold:0.5});
+      nums.forEach(function(el){ numIo.observe(el); });
+    } else {
+      nums.forEach(function(el){ el.textContent = el.getAttribute('data-count') + (el.getAttribute('data-suffix')||''); });
+    }
+  }
+
+  // Scroll-reveal
+  if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    var selectors = '.section-head, .t-card, .shift-col, .bonus-item, .offer-box, .combo, .scarcity, .guarantee, .principle, .approach-top, .pull-quote';
+    var els = Array.prototype.slice.call(document.querySelectorAll(selectors));
+    els.forEach(function(el){ el.classList.add('reveal'); });
+    if('IntersectionObserver' in window){
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if(entry.isIntersecting){
+            entry.target.classList.add('in');
+            io.unobserve(entry.target);
+          }
+        });
+      }, {threshold:0.12, rootMargin:'0px 0px -40px 0px'});
+      els.forEach(function(el){ io.observe(el); });
+    } else {
+      els.forEach(function(el){ el.classList.add('in'); });
+    }
+  }
+
+  // Smooth FAQ accordion
+  document.querySelectorAll('.faq details').forEach(function(det){
+    var content = det.querySelector('p');
+    det.addEventListener('toggle', function(){
+      if(det.open){
+        var h = content.scrollHeight;
+        content.style.maxHeight = '0px';
+        requestAnimationFrame(function(){
+          content.style.transition = 'max-height .35s ease, opacity .35s ease, margin-top .35s ease';
+          content.style.maxHeight = h + 'px';
+          content.style.opacity = '1';
+        });
+      }
+    });
+  });
+})();
+</script>
 
 </body>
 </html>
